@@ -7,6 +7,7 @@ public  class Src {
 
     Image SELIK;
     Animation FIRE;
+    Image TLEN;
 
     public void init ()throws SlickException{
         SELIK = new Image("src/source/selik.png");
@@ -17,6 +18,7 @@ public  class Src {
         Image fire5 = new Image("src/source/fire5.png");
         Image fire6 = new Image("src/source/fire6.png");
         Image fire7 = new Image("src/source/fire7.png");
+        TLEN = new Image("src/source/tlen.png");
         Image[] frames = {fire1,fire2,fire3,fire4,fire5,fire6,fire7};
         FIRE = new Animation(frames,70);
     }

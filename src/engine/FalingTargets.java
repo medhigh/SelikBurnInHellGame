@@ -2,41 +2,37 @@ package engine;
 
 import org.lwjgl.Sys;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
+
 /**
  * Created by med_high on 07.06.2015.
  */
 public class FalingTargets {
-    public HashMap<SimplePosition,Boolean> map; //20x20 pixels position from x0y0 of picture //true = flaming
+    public WeakHashMap<SimplePosition,Boolean> map; //20x20 pixels position from x0y0 of picture //true = flaming
+
 
     public FalingTargets() {
-        map = new HashMap<>();
+        map = new WeakHashMap<>();
     }
-    public short frag(Position position){
-        short fragCounter = 0;
-        if (map != null) {
-            short tmp[]=new short[2];
-            SimplePosition tmpPos = new SimplePosition();
-            for (int i = position.getX1(); i <position.getX2() ; i++) {
-                for (int j = position.getY1(); j <position.getY2() ; j++) {
-                    if(!map.isEmpty()){
-                        tmp[0]=(short)i; tmp[1]=(short)j;
-                        tmpPos.setPos(tmp);
-                        if(map.containsKey(tmpPos)){
-                            if(!map.get(tmpPos)){
-                                map.replace(tmpPos,true);
-                                fragCounter++;
-                            }
-                        }
-                    }
-                }
+
+    public int frag(int[] mass){
+        int frags = 0;
+        double x=0; double y=0;
+        x=(double)(mass[0]+mass[2])/2;
+        y=(double)(mass[1]+mass[3])/2;
+        for (Map.Entry<SimplePosition,Boolean> tmp:map.entrySet()){
+
+            //Math.sqrt(Math.pow((double)mass[2]-mass[0],2d)+Math.pow((double)mass[3]-mass[1],2d));
+           double distance= Math.sqrt(Math.pow(Math.max(tmp.getKey().getX(),x)-Math.min(tmp.getKey().getX(),x),2d)+
+                                      Math.pow(Math.max(tmp.getKey().getY(),y)-Math.min(tmp.getKey().getY(),y),2d));
+            if(distance<=25D) {
+                tmp.setValue(true);
+                frags++;
             }
         }
-        return fragCounter;
+        return frags;
     }
+
     public void fall(){
         SimplePosition simplePositionTemp = new SimplePosition();
         for (Map.Entry<SimplePosition,Boolean> tmp:map.entrySet()){
@@ -49,6 +45,24 @@ public class FalingTargets {
                 }
             }
         }
+    }
+    public void newThreadCreator(int nanos){
+        Thread creator = new Thread(){
+            @Override
+            public void run() {
+                for (;;) {
+                    synchronized (map){
+                    addTarget();
+                    }
+                    try {
+                        sleep((long)nanos);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
+        creator.start();
     }
     public void addTarget(){
         Random rand = new Random();
@@ -75,15 +89,15 @@ public class FalingTargets {
         }
         return tmpmap;
     }
-    public ArrayList<SimplePosition> getImageTargetPositionsFlaming(){
-        ArrayList<SimplePosition> list = new ArrayList<>();
+    public HashMap<SimplePosition,Boolean> getImageTargetPositionsFlaming(){
+        HashMap<SimplePosition,Boolean> tmpmap = new HashMap<>();
         SimplePosition sp = new SimplePosition();
         for (Map.Entry<SimplePosition,Boolean> tmp:map.entrySet()) {
             if (tmp.getValue() == true){
                 sp.setPos((short)(tmp.getKey().getX()-20),(short)(tmp.getKey().getY()-20));
-                list.add(sp);
+                tmpmap.put(sp, false);
             }
         }
-        return list;
+        return tmpmap;
     }
 }

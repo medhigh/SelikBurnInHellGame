@@ -1,5 +1,7 @@
 package engine;
 
+import javafx.geometry.Pos;
+
 /**
  * Created by med_high on 06.06.2015.
  */
@@ -35,11 +37,12 @@ public class Position {
     public void setPos(short[] pos) {
         this.pos = pos;
     }
-    public void setPos(short x1,short y1,short x2,short y2){
+    public Position setPos(short x1,short y1,short x2,short y2){
         this.pos[0]=x1;
         this.pos[1]=y1;
         this.pos[2]=x2;
         this.pos[3]=y2;
+        return this;
     }
 
     public short[] getPos() {
