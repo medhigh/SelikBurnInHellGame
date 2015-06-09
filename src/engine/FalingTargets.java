@@ -1,18 +1,17 @@
 package engine;
 
-import org.lwjgl.Sys;
-
 import java.util.*;
 
 /**
  * Created by med_high on 07.06.2015.
  */
 public class FalingTargets {
-    public WeakHashMap<SimplePosition,Boolean> map; //20x20 pixels position from x0y0 of picture //true = flaming
-
+    public HashMap<SimplePosition,Boolean> map; //20x20 pixels position from x0y0 of picture //true = flaming
+    private int firedCounter;
 
     public FalingTargets() {
-        map = new WeakHashMap<>();
+        map = new HashMap<>();
+        firedCounter =0;
     }
 
     public int frag(int[] mass){
@@ -21,13 +20,14 @@ public class FalingTargets {
         x=(double)(mass[0]+mass[2])/2;
         y=(double)(mass[1]+mass[3])/2;
         for (Map.Entry<SimplePosition,Boolean> tmp:map.entrySet()){
-
-            //Math.sqrt(Math.pow((double)mass[2]-mass[0],2d)+Math.pow((double)mass[3]-mass[1],2d));
-           double distance= Math.sqrt(Math.pow(Math.max(tmp.getKey().getX(),x)-Math.min(tmp.getKey().getX(),x),2d)+
-                                      Math.pow(Math.max(tmp.getKey().getY(),y)-Math.min(tmp.getKey().getY(),y),2d));
-            if(distance<=25D) {
-                tmp.setValue(true);
-                frags++;
+            if(!tmp.getValue()) {
+                //Math.sqrt(Math.pow((double)mass[2]-mass[0],2d)+Math.pow((double)mass[3]-mass[1],2d));
+                double distance = Math.sqrt(Math.pow(Math.max(tmp.getKey().getX(), x) - Math.min(tmp.getKey().getX(), x), 2d) +
+                        Math.pow(Math.max(tmp.getKey().getY(), y) - Math.min(tmp.getKey().getY(), y), 2d));
+                if (distance <= 25D) {
+                    tmp.setValue(true);
+                    frags++;
+                }
             }
         }
         return frags;
@@ -36,7 +36,7 @@ public class FalingTargets {
     public void fall(){
         SimplePosition simplePositionTemp = new SimplePosition();
         for (Map.Entry<SimplePosition,Boolean> tmp:map.entrySet()){
-            if((tmp.getKey().getY()==SimpleGameEgine.FIELD[1]+20)) map.remove(tmp);
+            if(new Integer((Short)(tmp.getKey().getY())).equals(new Integer(SimpleGameEgine.FIELD[1]+20))){}
             else{ // moving down
                 simplePositionTemp = tmp.getKey();
                 simplePositionTemp.setPos(simplePositionTemp.getX(),(short)(simplePositionTemp.getY()+1));
@@ -45,6 +45,17 @@ public class FalingTargets {
                 }
             }
         }
+        firedCounter++;
+        if(firedCounter >=75) cleanMap();
+    }
+    public void cleanMap(){
+        HashMap<SimplePosition,Boolean> resMap = new HashMap<>();
+        for(Map.Entry<SimplePosition,Boolean> tmp:map.entrySet()){
+            if(tmp.getKey().getY()!=(short)(SimpleGameEgine.FIELD[1]+20)){
+                resMap.put(tmp.getKey(),tmp.getValue());
+            }
+        }
+        map = resMap;
     }
     public void newThreadCreator(int nanos){
         Thread creator = new Thread(){

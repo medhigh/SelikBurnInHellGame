@@ -7,15 +7,15 @@
   
   javadoc - generate the javadoc for Slick
 -->
-<project name="kitipong" default="build-game" basedir=".">
+<project name="TheGame" default="build-game" basedir="C:\Users\med_high\IdeaProjects\TheGame">
 	
 <!--
  Initialise the build script
 -->
 <target name="init">
-	<property name="username" value="kevin"/>
+	<property name="username" value="med_high"/>
 	<property name="host" value="bob.newdawnsoftware.com"/>
-	<property name="dir" value="/home/kevin/public_html/slick/demos"/>
+	<property name="dir" value="C:\Users\med_high\IdeaProjects\TheGame"/>
 	<property name="webstartURL" value="http://slick.cokeandcode.com/demos"/>
 	<property name="homepage" value="http://slick.cokeandcode.com"/>
 	<property name="vendor" value="Slick 2D"/>
@@ -26,7 +26,7 @@
 	<property name="game.title" value="Kitipong"/>
 	<property name="game.mainclass" value="puzzle.Puzzle"/>
 	
-	<property name="slick.install" value="../Slick"/>
+	<property name="slick.install" value="C:\Users\med_high\IdeaProjects\TheGame\lib"/>
 	
 	<delete dir="${build.dir}"/>
 	<mkdir dir="${build.dir}/classes"/>

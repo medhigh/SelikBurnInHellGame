@@ -12,8 +12,16 @@ import org.newdawn.slick.geom.Transform;
 
 public class SimpleSlickGame extends BasicGame
 {
-
-    public Integer syn=0;
+    static {
+        // error System.setProperty("org.lwjgl.librarypath", "lib");
+        //org.lwjgl.librarypath
+        //System.loadLibrary("//"); // no .dll or .so extension!
+        //System.loadLibrary("lib"); // no .dll or .so extension!
+        ///System.loadLibrary("lib/"); // no .dll or .so extension!
+        //System.loadLibrary("lib/lib"); // no .dll or .so extension!
+        //!! error System.loadLibrary("lwjgl64"); // no .dll or .so extension!
+    }
+    public Integer score=0;
     public SimpleGameEgine engine;
     private Input input;
     private Src src;
@@ -68,34 +76,42 @@ public class SimpleSlickGame extends BasicGame
     @Override
     public void render(GameContainer gc, Graphics g) throws SlickException
     {
-        int counter=0;
+
         g.drawImage(src.TLEN,0,0);
         synchronized (engine.FT.map) {
 
-
             for (Map.Entry<SimplePosition, Boolean> tmp : engine.FT.map.entrySet()) {
-                counter += engine.FT.frag(engine.getCharPosition());
+                score += engine.FT.frag(engine.getCharPosition());
                 if (!tmp.getValue())
                     g.drawImage(src.SELIK, tmp.getKey().getX() - 20, tmp.getKey().getY() - 20);
                 else {
                     g.drawImage(src.SELIK, tmp.getKey().getX() - 20, tmp.getKey().getY() - 20);
                     g.drawAnimation(src.FIRE, tmp.getKey().getX() - 20, tmp.getKey().getY() - 20);
                 }
-                g.drawString("Counter: " + counter, 200, 400);
-                g.drawString(engine.getCharPosition()[0] + " " +
+            }
+            g.setColor(new Color(0, 180, 255));
+            g.drawString("Counter: " + score, 200, 400);
+            g.drawString(engine.getCharPosition()[0] + " " +
                         engine.getCharPosition()[1] + " " +
                         engine.getCharPosition()[2] + " " +
                         engine.getCharPosition()[3] + " " +
                         " ", 200, 420);
-            }
-            g.setColor(new Color(0, 180, 255));
             g.drawRect(engine.getCharX1(), engine.getCharY1(), engine.getCharWidth(), engine.getCharHeigth());
             engine.FT.fall();
+            // TEST CODE BEGINS!!! :
+            Image imgg = src.SELIK.copy();
+            imgg.setRotation(180);
+            //g.drawImage(imgg,200,200);
+            g.drawAnimation(src.FIRE, engine.getCharX1()+4, engine.getCharY1()+2);
+            //g.drawString(((Float)(imgg.getTextureOffsetX())).toString(),200,200);
         }
     }
 
     public static void main(String[] args)
-    {
+    {   //System.setProperty("org.lwjgl.librarypath", "C:/Users/med_high/IdeaProjects/TheGame/lib/");
+
+           //System.setProperty("org.lwjgl.librarypath", "jar://$MODULE_DIR$/lib/");
+           //System.setProperty("org.lwjgl64.librarypath", "jar://$MODULE_DIR$/lib/");
         SimpleSlickGame smp =new SimpleSlickGame("Simple Slick Game");
 
         try
@@ -104,7 +120,7 @@ public class SimpleSlickGame extends BasicGame
             app = new AppGameContainer(smp);
             app.setDisplayMode(640, 480, false);
             app.setShowFPS(true);
-            app.setTargetFrameRate(100);
+            app.setTargetFrameRate(150);
             //Initiate here
             app.start();
         }
